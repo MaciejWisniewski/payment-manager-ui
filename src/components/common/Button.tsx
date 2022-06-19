@@ -15,7 +15,7 @@ const Root = styled('button')`
 
 interface ButtonProps {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   style?: CSSProperties;
   type?: 'button' | 'submit' | 'reset';
 }

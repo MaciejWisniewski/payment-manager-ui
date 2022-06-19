@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { BankCard } from '../types/bankCard';
 
 class BankCardStore {
@@ -21,7 +21,15 @@ class BankCardStore {
   constructor() {
     makeObservable(this, {
       bankCards: observable,
+      addBankCard: action,
     });
+  }
+
+  addBankCard(bankCard: BankCard) {
+    const newBankCards = [...this.bankCards];
+    newBankCards.push(bankCard);
+
+    this.bankCards = newBankCards;
   }
 }
 

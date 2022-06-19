@@ -5,6 +5,8 @@ import { styled } from '@mui/system';
 import { white } from '../styles/colors';
 import Button from './common/Button';
 import close from '../svgs/close.svg';
+import { FormHelperText } from '@mui/material';
+import { useBankCardStore } from '../stores/bankCardStore';
 
 const Root = styled('form')`
   width: 100%;
@@ -30,9 +32,12 @@ const Close = styled('div')`
 
 interface BankCardFormProps {
   onClose: () => void;
+  onSubmit: () => void;
 }
 
-const BankCardForm: React.FC<BankCardFormProps> = ({ onClose }) => {
+const BankCardForm: React.FC<BankCardFormProps> = ({ onClose, onSubmit }) => {
+  const bankCardStore = useBankCardStore();
+
   const formik = useFormik({
     initialValues: {
       fullName: '',
@@ -42,11 +47,18 @@ const BankCardForm: React.FC<BankCardFormProps> = ({ onClose }) => {
     },
     onSubmit: async (values) => {
       console.log('values: ', values);
+      bankCardStore.addBankCard({
+        fullName: values.fullName,
+        cardNumber: values.cardNumber,
+        expiryDate: new Date(values.expiryDate),
+        cvc: values.cvc,
+      });
+      onSubmit();
     },
   });
 
   return (
-    <Root>
+    <Root onSubmit={formik.handleSubmit}>
       <Close>
         <img width={16} height={16} src={close} alt="close" onClick={onClose} />
       </Close>
@@ -70,18 +82,14 @@ const BankCardForm: React.FC<BankCardFormProps> = ({ onClose }) => {
         value={formik.values.expiryDate}
         onChange={formik.handleChange}
       />
+      <FormHelperText>Format: 08/2022</FormHelperText>
       <Input
         name="cvc"
         label="CVC (Security code)"
         value={formik.values.cvc}
         onChange={formik.handleChange}
       />
-      <Button
-        label="Confirm"
-        onClick={() => console.log('fejif')}
-        type="submit"
-        style={{ marginTop: 40 }}
-      />
+      <Button label="Confirm" type="submit" style={{ marginTop: 40 }} />
     </Root>
   );
 };
