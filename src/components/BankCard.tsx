@@ -120,7 +120,7 @@ const BankCard: React.FC<BankCardProps> = ({
       }}
     >
       <UpperRow>
-        <img src={mastercardLogo} />
+        <img src={mastercardLogo} alt="mastercard" />
         <FlexBox>
           <CvcBox>
             <UpperRowLabel>CVC</UpperRowLabel>
@@ -136,7 +136,7 @@ const BankCard: React.FC<BankCardProps> = ({
         <FullName>{fullName}</FullName>
         <BottomRow>
           <CardNumber>{formatCardNumber(cardNumber)}</CardNumber>
-          <img src={editIcon} />
+          <img src={editIcon} alt="edit" />
         </BottomRow>
       </div>
     </Root>

@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { purple, white } from '../../styles/colors';
 
 const Root = styled('button')`
@@ -15,10 +15,22 @@ const Root = styled('button')`
 
 interface ButtonProps {
   label: string;
+  onClick: () => void;
+  style?: CSSProperties;
+  type?: 'button' | 'submit' | 'reset';
 }
 
-const Button: React.FC<ButtonProps> = ({ label }) => {
-  return <Root>{label}</Root>;
+const Button: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  style,
+  type = 'button',
+}) => {
+  return (
+    <Root type={type} onClick={onClick} style={style}>
+      {label}
+    </Root>
+  );
 };
 
 export default Button;

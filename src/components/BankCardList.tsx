@@ -11,7 +11,6 @@ const Root = styled('div')`
   flex-direction: column;
   align-items: center;
   height: 100%;
-  padding: 24px;
 `;
 
 const Header = styled('div')`
@@ -37,9 +36,11 @@ const Cards = styled('div')`
   margin-bottom: 24px;
 `;
 
-interface BankCardListProps {}
+interface BankCardListProps {
+  onAddNewCardClick: () => void;
+}
 
-const BankCardList: React.FC<BankCardListProps> = () => {
+const BankCardList: React.FC<BankCardListProps> = ({ onAddNewCardClick }) => {
   return (
     <Root>
       <Header>Your cards</Header>
@@ -70,7 +71,7 @@ const BankCardList: React.FC<BankCardListProps> = () => {
           cardNumber="5532123455458014"
         />
       </Cards>
-      <Button label="Add new card" />
+      <Button label="Add new card" onClick={onAddNewCardClick} />
     </Root>
   );
 };
