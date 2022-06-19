@@ -1,17 +1,21 @@
 import React from 'react';
-import BankCard from './BankCard';
+import { styled } from '@mui/system';
+import BankCardList from './BankCardList';
+import { background } from '../styles/colors';
 import '../styles/App.css';
+
+const Root = styled('div')`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: ${background};
+`;
 
 function App() {
   return (
-    <div className="App">
-      <BankCard
-        cvc="009"
-        expires={new Date(2022, 8)}
-        fullName="John Cabruci"
-        cardNumber="5532123455458014"
-      />
-    </div>
+    <Root className="App">
+      <BankCardList />
+    </Root>
   );
 }
 
