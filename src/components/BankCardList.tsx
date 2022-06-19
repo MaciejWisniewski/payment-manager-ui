@@ -3,6 +3,8 @@ import { styled } from '@mui/system';
 import BankCard from './BankCard';
 import { grey, purple } from '../styles/colors';
 import Button from './common/Button';
+import { useBankCardStore } from '../stores/bankCardStore';
+import { observer } from 'mobx-react-lite';
 
 const Root = styled('div')`
   width: 100%;
@@ -40,40 +42,29 @@ interface BankCardListProps {
   onAddNewCardClick: () => void;
 }
 
-const BankCardList: React.FC<BankCardListProps> = ({ onAddNewCardClick }) => {
-  return (
-    <Root>
-      <Header>Your cards</Header>
-      <SubHeader>Add, edit or delete your cards any time</SubHeader>
-      <Cards>
-        <BankCard
-          cvc="009"
-          expires={new Date(2022, 8)}
-          fullName="John Cabruci"
-          cardNumber="5532123455458014"
-        />
-        <BankCard
-          cvc="009"
-          expires={new Date(2022, 8)}
-          fullName="John Cabruci"
-          cardNumber="5532123455458014"
-        />
-        <BankCard
-          cvc="009"
-          expires={new Date(2022, 8)}
-          fullName="John Cabruci"
-          cardNumber="5532123455458014"
-        />
-        <BankCard
-          cvc="009"
-          expires={new Date(2022, 8)}
-          fullName="John Cabruci"
-          cardNumber="5532123455458014"
-        />
-      </Cards>
-      <Button label="Add new card" onClick={onAddNewCardClick} />
-    </Root>
-  );
-};
+const BankCardList: React.FC<BankCardListProps> = observer(
+  ({ onAddNewCardClick }) => {
+    const bankCardStore = useBankCardStore();
+
+    return (
+      <Root>
+        <Header>Your cards</Header>
+        <SubHeader>Add, edit or delete your cards any time</SubHeader>
+        <Cards>
+          {bankCardStore.bankCards.map((card) => (
+            <BankCard
+              key={card.cardNumber}
+              cvc={card.cvc}
+              expiryDate={card.expiryDate}
+              fullName={card.fullName}
+              cardNumber={card.cardNumber}
+            />
+          ))}
+        </Cards>
+        <Button label="Add new card" onClick={onAddNewCardClick} />
+      </Root>
+    );
+  }
+);
 
 export default BankCardList;

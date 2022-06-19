@@ -77,14 +77,14 @@ const CardNumber = styled('div')`
 
 interface BankCardProps {
   cvc: string;
-  expires: Date;
+  expiryDate: Date;
   fullName: string;
   cardNumber: string;
 }
 
 const BankCard: React.FC<BankCardProps> = ({
   cvc,
-  expires,
+  expiryDate,
   fullName,
   cardNumber,
 }) => {
@@ -105,8 +105,8 @@ const BankCard: React.FC<BankCardProps> = ({
     return cardNumber.trim().replace(/\d{4}(?=.)/g, '$& ');
   };
 
-  const formatExpires = (expires: Date) => {
-    return expires.toLocaleDateString('en-US', {
+  const formatExpires = (expiryDate: Date) => {
+    return expiryDate.toLocaleDateString('en-US', {
       month: '2-digit',
       year: '2-digit',
     });
@@ -128,7 +128,7 @@ const BankCard: React.FC<BankCardProps> = ({
           </CvcBox>
           <div>
             <UpperRowLabel>EXPIRES</UpperRowLabel>
-            <UpperRowValue>{formatExpires(expires)}</UpperRowValue>
+            <UpperRowValue>{formatExpires(expiryDate)}</UpperRowValue>
           </div>
         </FlexBox>
       </UpperRow>
