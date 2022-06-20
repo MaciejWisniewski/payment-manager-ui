@@ -47,6 +47,14 @@ const validationSchema = Yup.object().shape({
       /[0-9][0-9][/][0-9][0-9]$/i,
       'Please fill in the date in valid format'
     )
+    .test('testMonth', 'Please fill in valid month', (v) => {
+      if (typeof v !== 'undefined') {
+        const splitted = v?.split('/');
+        return splitted.length > 0 && parseInt(splitted[0]) <= 12;
+      }
+
+      return false;
+    })
     .required('Please fill in expiry date'),
   cvc: Yup.string()
     .matches(/^[0-9]{3}$/i, 'CVC must be a 3 digit number')
