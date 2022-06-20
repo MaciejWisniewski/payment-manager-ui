@@ -7,6 +7,7 @@ import Button from './common/Button';
 import close from '../svgs/close.svg';
 import { FormHelperText } from '@mui/material';
 import { useBankCardStore } from '../stores/bankCardStore';
+import * as Yup from 'yup';
 
 const Root = styled('form')`
   width: 100%;
@@ -30,6 +31,27 @@ const Close = styled('div')`
   text-align: right;
 `;
 
+const validationSchema = Yup.object().shape({
+  fullName: Yup.string()
+    .matches(
+      /^[a-z]([-']?[a-z]+)*( [a-z]([-']?[a-z]+)*)+$/i,
+      'Please fill in first name and surname'
+    )
+    .required('Please fill in your name'),
+  cardNumber: Yup.string()
+    .matches(/^\s*(?:\d\s*){16}$/i, 'Card number must be exactly 16 digit long')
+    .required('Please fill in card number'),
+  expiryDate: Yup.string()
+    .matches(
+      /[0-9][0-9][/][0-9][0-9]$/i,
+      'Please fill in the date in valid format'
+    )
+    .required('Please fill in expiry date'),
+  cvc: Yup.string()
+    .matches(/^[0-9]{3}$/i, 'CVC must be a 3 digit number')
+    .required('Please fill in CVC number'),
+});
+
 interface BankCardFormProps {
   onClose: () => void;
   onSubmit: () => void;
@@ -45,12 +67,13 @@ const BankCardForm: React.FC<BankCardFormProps> = ({ onClose, onSubmit }) => {
       expiryDate: '',
       cvc: '',
     },
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log('values: ', values);
+      const [month, year] = values.expiryDate.split('/');
       bankCardStore.addBankCard({
         fullName: values.fullName,
         cardNumber: values.cardNumber,
-        expiryDate: new Date(values.expiryDate),
+        expiryDate: new Date(parseInt(year), parseInt(month)),
         cvc: values.cvc,
       });
       onSubmit();
@@ -66,30 +89,50 @@ const BankCardForm: React.FC<BankCardFormProps> = ({ onClose, onSubmit }) => {
       <Input
         name="fullName"
         label="Name in card"
-        autoFocus
         value={formik.values.fullName}
+        error={formik.errors.fullName}
+        color={formik.errors.fullName ? 'error' : 'success'}
+        focused={formik.touched.fullName}
+        onBlur={formik.handleBlur}
         onChange={formik.handleChange}
       />
       <Input
         name="cardNumber"
         label="Card number"
         value={formik.values.cardNumber}
+        error={formik.errors.cardNumber}
+        color={formik.errors.cardNumber ? 'error' : 'success'}
+        focused={formik.touched.cardNumber}
+        onBlur={formik.handleBlur}
         onChange={formik.handleChange}
       />
       <Input
         name="expiryDate"
         label="Expiry date"
         value={formik.values.expiryDate}
+        error={formik.errors.expiryDate}
+        color={formik.errors.expiryDate ? 'error' : 'success'}
+        focused={formik.touched.expiryDate}
+        onBlur={formik.handleBlur}
         onChange={formik.handleChange}
       />
-      <FormHelperText>Format: 08/2022</FormHelperText>
+      <FormHelperText>Format: 08/22</FormHelperText>
       <Input
         name="cvc"
         label="CVC (Security code)"
         value={formik.values.cvc}
+        error={formik.errors.cvc}
+        color={formik.errors.cvc ? 'error' : 'success'}
+        focused={formik.touched.cvc}
+        onBlur={formik.handleBlur}
         onChange={formik.handleChange}
       />
-      <Button label="Confirm" type="submit" style={{ marginTop: 40 }} />
+      <Button
+        label="Confirm"
+        type="submit"
+        style={{ marginTop: 40 }}
+        disabled={!(formik.dirty && formik.isValid)}
+      />
     </Root>
   );
 };

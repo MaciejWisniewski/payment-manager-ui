@@ -11,6 +11,10 @@ const Root = styled('button')`
   font-weight: bold;
   border-radius: 100px;
   border: unset;
+
+  &:disabled {
+    opacity: 0.6;
+  }
 `;
 
 interface ButtonProps {
@@ -18,16 +22,12 @@ interface ButtonProps {
   onClick?: () => void;
   style?: CSSProperties;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  label,
-  onClick,
-  style,
-  type = 'button',
-}) => {
+const Button: React.FC<ButtonProps> = ({ label, type = 'button', ...rest }) => {
   return (
-    <Root type={type} onClick={onClick} style={style}>
+    <Root type={type} {...rest}>
       {label}
     </Root>
   );
