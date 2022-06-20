@@ -6,6 +6,8 @@ import Button from './common/Button';
 import { useBankCardStore } from '../stores/bankCardStore';
 import { observer } from 'mobx-react-lite';
 import BankCardFormModal from './BankCardFormModal';
+import { InitialBankCardFormValues } from '../types/initialBankCardFormValues';
+import { formatExpiryDate } from '../utils/formatExpiryDate';
 
 const Root = styled('div')`
   width: 100%;
@@ -44,6 +46,10 @@ interface BankCardListProps {}
 const BankCardList: React.FC<BankCardListProps> = observer(() => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [addedBankCard, setAddedBankCard] = useState<boolean>(false);
+  const [initialFormData, setInitialFormData] = useState<
+    InitialBankCardFormValues | undefined
+  >(undefined);
+
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const bankCardStore = useBankCardStore();
@@ -51,6 +57,7 @@ const BankCardList: React.FC<BankCardListProps> = observer(() => {
   const handleFormSubmit = () => {
     setOpenModal(false);
     setAddedBankCard(true);
+    setInitialFormData(undefined);
   };
 
   useEffect(() => {
@@ -60,6 +67,18 @@ const BankCardList: React.FC<BankCardListProps> = observer(() => {
 
     setAddedBankCard(false);
   }, [addedBankCard]);
+
+  const handleEditClick = (cardNumber: string) => {
+    const bankCardToEdit = bankCardStore.bankCards.find(
+      (c) => c.cardNumber === cardNumber
+    )!;
+
+    setInitialFormData({
+      ...bankCardToEdit,
+      expiryDate: formatExpiryDate(bankCardToEdit.expiryDate),
+    });
+    setOpenModal(true);
+  };
 
   return (
     <Root>
@@ -73,12 +92,14 @@ const BankCardList: React.FC<BankCardListProps> = observer(() => {
             expiryDate={card.expiryDate}
             fullName={card.fullName}
             cardNumber={card.cardNumber}
+            onEditClick={() => handleEditClick(card.cardNumber)}
           />
         ))}
       </Cards>
       <Button label="Add new card" onClick={() => setOpenModal(true)} />
       <BankCardFormModal
         open={openModal}
+        initialFormData={initialFormData}
         onClose={() => setOpenModal(false)}
         onSubmit={handleFormSubmit}
       />

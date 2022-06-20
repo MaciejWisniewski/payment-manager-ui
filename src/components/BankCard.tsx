@@ -4,6 +4,7 @@ import cardBackgroundShape from '../svgs/card-background-shape.svg';
 import mastercardLogo from '../svgs/mastercard-logo.svg';
 import editIcon from '../svgs/edit-icon.svg';
 import { grey, purple, white } from '../styles/colors';
+import { formatExpiryDate } from '../utils/formatExpiryDate';
 
 const Root = styled('div')`
   width: 100%;
@@ -80,6 +81,7 @@ interface BankCardProps {
   expiryDate: Date;
   fullName: string;
   cardNumber: string;
+  onEditClick?: () => void;
 }
 
 const BankCard: React.FC<BankCardProps> = ({
@@ -87,6 +89,7 @@ const BankCard: React.FC<BankCardProps> = ({
   expiryDate,
   fullName,
   cardNumber,
+  onEditClick,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState<number>(207);
@@ -105,13 +108,6 @@ const BankCard: React.FC<BankCardProps> = ({
     return cardNumber.trim().replace(/\d{4}(?=.)/g, '$& ');
   };
 
-  const formatExpires = (expiryDate: Date) => {
-    return expiryDate.toLocaleDateString('en-US', {
-      month: '2-digit',
-      year: '2-digit',
-    });
-  };
-
   return (
     <Root
       ref={cardRef}
@@ -128,7 +124,7 @@ const BankCard: React.FC<BankCardProps> = ({
           </CvcBox>
           <div>
             <UpperRowLabel>EXPIRES</UpperRowLabel>
-            <UpperRowValue>{formatExpires(expiryDate)}</UpperRowValue>
+            <UpperRowValue>{formatExpiryDate(expiryDate)}</UpperRowValue>
           </div>
         </FlexBox>
       </UpperRow>
@@ -136,7 +132,7 @@ const BankCard: React.FC<BankCardProps> = ({
         <FullName>{fullName}</FullName>
         <BottomRow>
           <CardNumber>{formatCardNumber(cardNumber)}</CardNumber>
-          <img src={editIcon} alt="edit" />
+          <img src={editIcon} alt="edit" onClick={onEditClick} />
         </BottomRow>
       </div>
     </Root>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import Input from './common/Input';
 import { styled } from '@mui/system';
@@ -8,6 +8,7 @@ import close from '../svgs/close.svg';
 import { FormHelperText } from '@mui/material';
 import { useBankCardStore } from '../stores/bankCardStore';
 import * as Yup from 'yup';
+import { InitialBankCardFormValues } from '../types/initialBankCardFormValues';
 
 const Root = styled('form')`
   width: 100%;
@@ -52,23 +53,29 @@ const validationSchema = Yup.object().shape({
     .required('Please fill in CVC number'),
 });
 
+const defaultValues = { fullName: '', cardNumber: '', expiryDate: '', cvc: '' };
+
 interface BankCardFormProps {
+  initialValues?: InitialBankCardFormValues;
   onClose: () => void;
   onSubmit: () => void;
 }
 
-const BankCardForm: React.FC<BankCardFormProps> = ({ onClose, onSubmit }) => {
+const BankCardForm: React.FC<BankCardFormProps> = ({
+  initialValues = defaultValues,
+  onClose,
+  onSubmit,
+}) => {
+  const [initialCardNumber] = useState<string>(initialValues.cardNumber);
   const bankCardStore = useBankCardStore();
 
   const formik = useFormik({
-    initialValues: {
-      fullName: '',
-      cardNumber: '',
-      expiryDate: '',
-      cvc: '',
-    },
+    initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      if (initialCardNumber.trim().length > 0)
+        bankCardStore.deleteBankCard(initialCardNumber);
+
       const [month, year] = values.expiryDate.split('/');
       bankCardStore.addBankCard({
         fullName: values.fullName,

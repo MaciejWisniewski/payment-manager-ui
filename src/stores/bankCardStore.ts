@@ -22,6 +22,7 @@ class BankCardStore {
     makeObservable(this, {
       bankCards: observable,
       addBankCard: action,
+      deleteBankCard: action,
     });
   }
 
@@ -30,6 +31,12 @@ class BankCardStore {
     newBankCards.push(bankCard);
 
     this.bankCards = newBankCards;
+  }
+
+  deleteBankCard(cardNumber: string) {
+    this.bankCards = this.bankCards.filter(
+      (bc) => bc.cardNumber !== cardNumber
+    );
   }
 }
 
